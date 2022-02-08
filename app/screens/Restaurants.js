@@ -4,7 +4,7 @@ import { View, Text} from "react-native";
 export default function Restaurants(){
     return (
         <View>
-            <text>Restaurants...</text>
+            <Text>xRestaurantsx...</Text>
         </View>
     )
 }
