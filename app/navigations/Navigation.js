@@ -1,7 +1,10 @@
-import react from "react";
+import React from "react";
 import {  } from "react-native-elements";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+
 import { Icon } from "react-native-elements";
 import RestaurantsStack from "./RestaurantsStack";
 import FavoritesStack from "./FavoritesStack";
@@ -9,21 +12,20 @@ import TopRestaurantsStack from "./TopRestaurantsStack";
 import SearchStack from "./SearchStack";
 import AccountStack from "./AccountStack";
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 export default function Navigation(){
     return (
         <NavigationContainer>
             <Tab.Navigator
-                initialRouteName="restaurants"
+                initialRouteName="restaurants-main"
                 activeColor="#f0edf6"
-                inactiveColor="#3e2465"
-                // screenOptions={{
-                //     inactiveTintColor: "red", //#646464
-                //     activeTintColort: "#00a680",
-                // }}
+                // inactiveColor="#3e2465"
+                
+                barStyle={{ backgroundColor: '#00a680' }}
+                
                 screenOptions={({ route }) => ({
-                    tabBarIcon: ({ color}) => screenOptions(route, color),
+                    tabBarIcon: ({ color }) => screenOptions(route, color),
                 })}
             >
                 <Tab.Screen 
@@ -82,6 +84,6 @@ function screenOptions(route, color) {
     }
 
     return (
-        <Icon type="material-community" name={iconName} size={22} color={color} />
+        <Icon type="material-community" name={iconName} size={26} color={color} />
     )
 }
