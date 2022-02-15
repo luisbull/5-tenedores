@@ -1,7 +1,11 @@
-import React from "react";
-import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
+import React, { useRef } from "react";
+import { StyleSheet, View, ScrollView, Image } from "react-native";
+import Toast from "react-native-easy-toast";
 import RegisterForm from "../../components/Account/RegisterForm";
+
 export default function Registe() {
+
+    const toastRef = useRef();
     return (
         <ScrollView>
             <Image 
@@ -10,8 +14,9 @@ export default function Registe() {
                 style={styles.logo}
             />
             <View style={styles.viewForm}>
-                <RegisterForm />
+                <RegisterForm toastRef={toastRef} />
             </View>
+            <Toast ref={toastRef} position="center" opacity={0.9} />
         </ScrollView>
     );
 }
