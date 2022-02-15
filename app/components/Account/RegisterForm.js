@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, } from 'react-native';
 import { Icon, Input, Button } from 'react-native-elements';
+import Loading from '../Loading';
 import { validateEmail } from '../../utils/validations';
 import { size, isEmpty } from 'lodash';
 import * as firebase from 'firebase';
@@ -13,6 +14,7 @@ export default function RegisterForm(props) {
     const [showPassword, setShowPassword] = useState(false);
     const [repeatShowPassword, setRepeatShowPassword] = useState(false);
     const [formData, setFormData] = useState(defaultFormValue());
+    const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
 
     const onSubmit = () => {
@@ -33,14 +35,17 @@ export default function RegisterForm(props) {
             // console.log('Contrasena es menor de 6 caracteres');
         }
         else {
+            setLoading(true);
             firebase
                 .auth()
                 .createUserWithEmailAndPassword(formData.email, formData.password)
                 .then(response => {
+                    setLoading(false);
                     navigation.navigate("account")
                     console.log(response);
                 })
                 .catch(err => {
+                    setLoading(false);
                     toastRef.current.show("Email ya esta en uso. Intentar con otro")
                     console.log(err);
                 })
@@ -101,6 +106,10 @@ export default function RegisterForm(props) {
                 containerStyle={styles.btnContainerRegister}
                 buttonStyle={styles.btnRegister}
                 onPress={onSubmit}
+            />
+            <Loading 
+                isVisible={loading}
+                text="Creando cuenta"
             />
         </View>
     )
