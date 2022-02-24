@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem, Icon } from 'react-native-elements';
-// import { map } from 'lodash';
 import Modal from '../Modal';
 import ChangeDisplayNameForm from './ChangeDisplayNameForm';
 import ChangeEmailForm from './ChangeEmailForm';
 import { ChangePasswordForm } from './ChangePasswordForm';
 
+
 export default function AccountOptions(props){
     const { userInfo, toastRef, setReloadUserInfo } = props
     const [showModal, setShowModal] = useState(false);
     const [renderComponent, setRenderComponent] = useState(null)
-    // console.log(userInfo.uid);
-    // console.log(menuOptions);
     const selectedComponent = (key) => {
         switch(key) {
             case "DisplayName":
@@ -40,10 +38,8 @@ export default function AccountOptions(props){
             case "Password":
                 setRenderComponent(
                     <ChangePasswordForm 
-                    // password={userInfo.password}
                     setShowModal={setShowModal}
                     toastRef={toastRef}
-                    // setReloadUserInfo={setReloadUserInfo} 
                     />
                 )
                 setShowModal(true)
@@ -58,47 +54,23 @@ export default function AccountOptions(props){
 
     return (
         <View>
-            {/* {
-                map(menuOptions, (menu, index) => (
-                    <ListItem 
-                        key={index} 
-                        title={menu.title} 
-                        leftIcon={{
-                            type: menu.iconType,
-                            name: menu.iconNameLeft,
-                            color: menu.iconColorLeft
-                        }}
-                        rightIcon={{
-                            type: menu.iconType,
-                            name: menu.iconNameRight,
-                            color: menu.iconColorRight
-                        }}
-                        containerStyle={styles.menuItems}
-                        onPress={menu.onPress}
-                    >
-                    </ListItem>
+            {
+                menuOptions.map((item, i) => (
+                <ListItem key={i} style={styles.menuItems} onPress={item.onPress}>
+                    <Icon name={item.iconNameLeft} type={item.iconType} color={item.iconColorLeft} />
+                    <ListItem.Content>
+                    <ListItem.Title>{item.title}</ListItem.Title>
+                    </ListItem.Content>
+                    <ListItem.Chevron color={item.iconColorRight}/>
+                </ListItem>
                 ))
-            } */}
-            <View>
-                {
-                    menuOptions.map((item, i) => (
-                    <ListItem key={i} style={styles.menuItems} onPress={item.onPress}>
-                        <Icon name={item.iconNameLeft} type={item.iconType} color={item.iconColorLeft} />
-                        <ListItem.Content>
-                        <ListItem.Title>{item.title}</ListItem.Title>
-                        </ListItem.Content>
-                        <ListItem.Chevron color={item.iconColorRight}/>
-                    </ListItem>
-                    ))
-                }
-                {renderComponent && (
-                    <Modal isVisible={showModal} setIsVisible={setShowModal}>
-                        {renderComponent}
-                    </Modal>
-                )}
-            </View>
+            }
+            {renderComponent && (
+                <Modal isVisible={showModal} setIsVisible={setShowModal}>
+                    {renderComponent}
+                </Modal>
+            )}
         </View>
-
     )
 }
 
@@ -138,8 +110,6 @@ function generateOptions(selectedComponent){
 const styles = StyleSheet.create({
     menuItems: {
         borderBottomWidth: 1,
-        // borderTopWidth: 1,
         borderBottomColor: '#e3e3e3',
-        // borderTopColor: '#e3e3e3'
     }
 })

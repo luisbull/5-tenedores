@@ -13,12 +13,8 @@ export default function InfoUser(props){
         setLoadingText
     } = props;
 
-    // console.log(props.userInfo);
-
     const changeAvatar = async () => {
-        // const resultPermissions = await Permissions.askAsync(Permissions.Camera);
         const resultPermissions = await Camera.requestCameraPermissionsAsync();
-        // console.log(resultPermissions);
         const resultPermissionsCamera = resultPermissions.status;
 
         if (resultPermissionsCamera === 'denied'){
@@ -29,7 +25,6 @@ export default function InfoUser(props){
                 allowsEditing: true,
                 aspect: [4,3],
             });
-            // console.log(result);
             if(result.cancelled) {
                 toastRef.current.show("Has cancelado la seleccion de imagen")
             }
@@ -80,7 +75,6 @@ export default function InfoUser(props){
             <Avatar 
                 rounded
                 size="large"
-                // showEditButton={true}
                 onPress={changeAvatar}
                 containerStyle={styles.userInfoAvatar}
                 source={ photoURL ? {uri: photoURL} : require("../../../assets/img/avatar-default.jpg")}
@@ -103,7 +97,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "row",
         backgroundColor: "#f2f2f2",
-        // backgroundColor: "#00a680",
         paddingTop: 30,
         paddingBottom: 30
     },

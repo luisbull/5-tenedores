@@ -1,10 +1,7 @@
 import React from "react";
 import {  } from "react-native-elements";
 import { NavigationContainer } from "@react-navigation/native";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-
 import { Icon } from "react-native-elements";
 import RestaurantsStack from "./RestaurantsStack";
 import FavoritesStack from "./FavoritesStack";
@@ -20,10 +17,7 @@ export default function Navigation(){
             <Tab.Navigator
                 initialRouteName="restaurants-main"
                 activeColor="#f0edf6"
-                // inactiveColor="#3e2465"
-                
                 barStyle={{ backgroundColor: '#00a680' }}
-                
                 screenOptions={({ route }) => ({
                     tabBarIcon: ({ color }) => screenOptions(route, color),
                 })}

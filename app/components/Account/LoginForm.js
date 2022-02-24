@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
-import Loading from '../Loading';
-import { validateEmail } from '../../utils/validations';
 import { isEmpty } from 'lodash';
 import * as firebase from 'firebase';
+import Loading from '../Loading';
+import { validateEmail } from '../../utils/validations';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginForm(props) {
 
     const { toastRef } = props;
-
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState(defaultFormValue());
     const [loading, setLoading] = useState(false);
@@ -18,15 +17,11 @@ export default function LoginForm(props) {
 
     const onSubmit = () => {
 
-        console.log(formData);
-
         if (isEmpty(formData.email) || isEmpty(formData.password)){
             toastRef.current.show("Todos los campos son obligatorios");
-            // console.log('Todos los campos son obligatorios');
         }
         else if (!validateEmail(formData.email)){
             toastRef.current.show("Email no es correcto");
-            // console.log('Email no es correcto');
         }
         else {
             setLoading(true);
@@ -36,14 +31,11 @@ export default function LoginForm(props) {
                 .then(response => {
                     setLoading(false);
                     navigation.navigate("account")
-                    console.log(response);
                 })
-                .catch(err => {
+                .catch(() => {
                     setLoading(false);
                     toastRef.current.show("Email o Contrasena estan incorrectos")
-                    console.log(err);
                 })
-            console.log('OK');
         }
     }
 

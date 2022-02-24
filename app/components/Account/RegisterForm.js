@@ -10,7 +10,6 @@ import { useNavigation } from '@react-navigation/native';
 export default function RegisterForm(props) {
 
     const { toastRef } = props;
-
     const [showPassword, setShowPassword] = useState(false);
     const [repeatShowPassword, setRepeatShowPassword] = useState(false);
     const [formData, setFormData] = useState(defaultFormValue());
@@ -20,19 +19,15 @@ export default function RegisterForm(props) {
     const onSubmit = () => {
         if (isEmpty(formData.email) || isEmpty(formData.password) || isEmpty(formData.repeatPassword)){
             toastRef.current.show("Todos los campos son obligatorios");
-            // console.log('Todos los campos son obligatorios');
         }
         else if (!validateEmail(formData.email)){
             toastRef.current.show("Email no es correcto");
-            // console.log('Email no es correcto');
         }
         else if (formData.password !== formData.repeatPassword){
             toastRef.current.show("Contrasenas no son iguales");
-            // console.log('Contrasenas no son iguales');
         }
         else if (size(formData.password) < 6){
             toastRef.current.show("Contrasena es menor de 6 caracteres");
-            // console.log('Contrasena es menor de 6 caracteres');
         }
         else {
             setLoading(true);
@@ -42,7 +37,6 @@ export default function RegisterForm(props) {
                 .then(response => {
                     setLoading(false);
                     navigation.navigate("account")
-                    console.log(response);
                 })
                 .catch(err => {
                     setLoading(false);
