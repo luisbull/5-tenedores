@@ -3,8 +3,9 @@ import { StyleSheet, View, Text} from "react-native";
 import { Icon } from 'react-native-elements';
 import * as firebase from 'firebase';
 
-export default function Restaurants(){
+export default function Restaurants(props){
 
+    const { navigation } = props;
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -26,6 +27,7 @@ export default function Restaurants(){
                     name="plus"
                     color="#00a680"
                     containerStyle={styles.btnContainer}
+                    onPress={() => navigation.navigate("add-restaurant") }
                 />
             )}
         </View>
