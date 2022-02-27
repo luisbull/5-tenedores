@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView, Alert, Dimensions } from 'react-native';
 import { Icon, Avatar, Image, Input, Button } from 'react-native-elements';
+import { filter, size } from 'lodash';
+import * as Camera from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function AddRestaurantForm (props){
 
@@ -8,7 +11,9 @@ export default function AddRestaurantForm (props){
     const [restaurantName, setRestaurantName] = useState("");
     const [restaurantAddress, setRestaurantAddress] = useState("");
     const [restaurantDescription, setRestaurantDescription] = useState("");
+    const [imageSelected, setImageSelected] = useState([])
 
+    console.log(imageSelected);
 
     const addRestaurant = () => {
         console.log("OK");
@@ -23,6 +28,11 @@ export default function AddRestaurantForm (props){
                 setRestaurantName={setRestaurantName}
                 setRestaurantAddress={setRestaurantAddress}
                 setRestaurantDescription={setRestaurantDescription}
+            />
+            <UploadImage 
+                toastRef={toastRef}
+                imageSelected={imageSelected}
+                setImageSelected={setImageSelected}
             />
             <Button 
                 title="Crear Restaurante"
@@ -59,6 +69,85 @@ function FormAdd(props){
     )
 }
 
+function UploadImage(props){
+
+    const { toastRef, imageSelected, setImageSelected } = props;
+
+    const imageSelect = async () => {
+        const resultPermissions = await Camera.requestCameraPermissionsAsync();
+        const resultPermissionsCamera = resultPermissions.status;
+
+        toastRef.current.show("Es necesario aceptar los permisos de acceso. Si inicialmente los negaste, tendras que ir a ajustes y hacerlo manualmente",4000);
+        if (resultPermissionsCamera === 'denied'){
+            toastRef.current.show("Es necesario aceptar los permisos de acceso. Si inicialmente los negaste, tendras que ir a ajustes y hacerlo manualmente",4000);
+        } 
+        else{
+            const result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [4,3],
+            });
+
+            if(result.cancelled) {
+                toastRef.current.show("Has cancelado la seleccion de imagen")
+            }
+            else {
+                setImageSelected([...imageSelected, result.uri])
+                // uploadImage(result.uri).then(() => {
+                //     updatePhoroUrl();
+                // }).catch(() => {
+                //     toastRef.current.show("Error al actualizar avatar")
+                // })
+            }
+        }
+    }
+
+    const removeImage = (image) => {
+
+        Alert.alert(
+            "Eliminar imagen",
+            "Estas seguro que quieres eliminar la imagen?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel"
+                },
+                {
+                    text: "Eliminar",
+                    onPress: () => {
+                        setImageSelected(
+                            filter(imageSelected, (imageUrl) => imageUrl !== image)
+                        )
+                    }
+                }
+            ]
+        )
+    }
+
+    return (
+        <View style={styles.viewImage}>
+            {size(imageSelected) < 4 && (
+                <Icon 
+                    type='material-community'
+                    name='camera'
+                    color='#7a7a7a'
+                    containerStyle={styles.containerIcon}
+                    onPress={imageSelect}
+                />
+            )}
+            {
+                imageSelected.map((imageRestaurant, i) => (
+                    <Avatar 
+                        key={i} 
+                        style={styles.miniatureStyle}
+                        source={{ uri: imageRestaurant}}
+                        onPress={() => removeImage(imageRestaurant)}
+                    />
+                ))
+            }
+        </View>
+    )
+}
+
 const styles = StyleSheet.create({
     scrollView: {
         height: "100%"
@@ -79,5 +168,24 @@ const styles = StyleSheet.create({
     btnAddRestaurant: {
         backgroundColor:"#00a280",
         margin: 20
+    },
+    viewImage: {
+        flexDirection: "row",
+        marginLeft: 20,
+        marginRight: 20,
+        marginTop: 30
+    },
+    containerIcon: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: 10,
+        height: 70,
+        width: 70,
+        backgroundColor: "#e3e3e3"
+    },
+    miniatureStyle: {
+        height: 70,
+        width: 70,
+        marginRight: 10
     }
 })
