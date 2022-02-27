@@ -5,6 +5,8 @@ import { filter, size } from 'lodash';
 import * as Camera from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 
+const widthScreen = Dimensions.get("window").width;
+
 export default function AddRestaurantForm (props){
 
     const { toastRef, setIsLoading, navigation} = props;
@@ -24,6 +26,7 @@ export default function AddRestaurantForm (props){
 
     return (
         <ScrollView style={styles.scrollView}>
+            <ImageRestaurant imageRestaurant={imageSelected[0]} />
             <FormAdd 
                 setRestaurantName={setRestaurantName}
                 setRestaurantAddress={setRestaurantAddress}
@@ -41,6 +44,19 @@ export default function AddRestaurantForm (props){
             />
         </ScrollView>
     );
+}
+
+function ImageRestaurant(props){
+    const { imageRestaurant} = props;
+
+    return (
+        <View style={styles.ViewPhoto}>
+            <Image 
+                source={imageRestaurant ? { uri: imageRestaurant } : require("../../../assets/img/no-image.png")}
+                style={{ width: widthScreen, height: 200 }}
+            />
+        </View>
+    )
 }
 
 function FormAdd(props){
@@ -92,11 +108,6 @@ function UploadImage(props){
             }
             else {
                 setImageSelected([...imageSelected, result.uri])
-                // uploadImage(result.uri).then(() => {
-                //     updatePhoroUrl();
-                // }).catch(() => {
-                //     toastRef.current.show("Error al actualizar avatar")
-                // })
             }
         }
     }
@@ -187,5 +198,10 @@ const styles = StyleSheet.create({
         height: 70,
         width: 70,
         marginRight: 10
+    },
+    ViewPhoto: {
+        alignItems: "center",
+        height: 200,
+        marginBottom: 20
     }
 })
