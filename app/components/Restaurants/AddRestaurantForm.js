@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, ScrollView, Alert, Dimensions } from 'react-native';
 import { Icon, Avatar, Image, Input, Button } from 'react-native-elements';
-import { filter, size } from 'lodash';
+import { map, filter, size } from 'lodash';
 import * as Camera from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
+import uuidv4 from 'random-uuid-v4';
 import Modal from '../Modal';
+import { firebaseApp } from '../../utils/firebase';
+import firebase from 'firebase/app';
+import 'firebase/storage';
 
 const widthScreen = Dimensions.get("window").width;
 
@@ -16,11 +20,11 @@ export default function AddRestaurantForm (props){
     const [restaurantName, setRestaurantName] = useState("");
     const [restaurantAddress, setRestaurantAddress] = useState("");
     const [restaurantDescription, setRestaurantDescription] = useState("");
-    const [imageSelected, setImageSelected] = useState([]);
+    const [imagesSelected, setImagesSelected] = useState([]);
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [locationRestaurant, setLocationRestaurant] = useState(null);
 
-    // console.log(imageSelected);
+    // console.log(imagesSelected);
 
     const addRestaurant = () => {
         // console.log(`Restaurant name: ${restaurantName}`);
@@ -30,24 +34,47 @@ export default function AddRestaurantForm (props){
         if (!restaurantName || !restaurantAddress || !restaurantDescription){
             toastRef.current.show("Todos los campos son obligatorios");
         }
-        else if (size(imageSelected) === 0){
+        else if (size(imagesSelected) === 0){
             toastRef.current.show("El restaurante tiene que tener minimo una foto");
         }
         else if (!locationRestaurant){
             toastRef.current.show("El restaurante tiene que tener localizacion en el mapa");
         }
         else {
-            console.log("OK");
+            setIsLoading(true);
+            uploadImageStorage().then(response => {
+                console.log(response);
+                setIsLoading(false);
+            });
         }
     }
 
-    const uploadImageStorage = () => {
-        
-    }
+    const uploadImageStorage = async () => {
+        const imageBlob =[];
+
+        await Promise.all(
+            map(imagesSelected, async (image) => {
+                const response = await fetch(image);
+                const blob = await response.blob();
+                const ref = firebase.storage().ref('restaurants').child(uuidv4())
+                await ref.put(blob).then(async result => {
+                     await firebase
+                        .storage()
+                        .ref(`restaurants/${result.metadata.name}`)
+                        .getDownloadURL()
+                        .then((photoUrl) => {
+                            imageBlob.push(photoUrl);
+                        });
+                });
+            })
+        );
+
+        return imageBlob;
+    };
 
     return (
         <ScrollView style={styles.scrollView}>
-            <ImageRestaurant imageRestaurant={imageSelected[0]} />
+            <ImageRestaurant imageRestaurant={imagesSelected[0]} />
             <FormAdd 
                 setRestaurantName={setRestaurantName}
                 setRestaurantAddress={setRestaurantAddress}
@@ -57,8 +84,8 @@ export default function AddRestaurantForm (props){
             />
             <UploadImage 
                 toastRef={toastRef}
-                imageSelected={imageSelected}
-                setImageSelected={setImageSelected}
+                imagesSelected={imagesSelected}
+                setImagesSelected={setImagesSelected}
             />
             <Button 
                 title="Crear Restaurante"
@@ -191,7 +218,7 @@ function Map(props){
 
 function UploadImage(props){
 
-    const { toastRef, imageSelected, setImageSelected } = props;
+    const { toastRef, imagesSelected, setImagesSelected } = props;
 
     const imageSelect = async () => {
         const resultPermissions = await Camera.requestCameraPermissionsAsync();
@@ -211,7 +238,7 @@ function UploadImage(props){
                 toastRef.current.show("Has cancelado la seleccion de imagen")
             }
             else {
-                setImageSelected([...imageSelected, result.uri])
+                setImagesSelected([...imagesSelected, result.uri])
             }
         }
     }
@@ -229,8 +256,8 @@ function UploadImage(props){
                 {
                     text: "Eliminar",
                     onPress: () => {
-                        setImageSelected(
-                            filter(imageSelected, (imageUrl) => imageUrl !== image)
+                        setImagesSelected(
+                            filter(imagesSelected, (imageUrl) => imageUrl !== image)
                         )
                     }
                 }
@@ -240,7 +267,7 @@ function UploadImage(props){
 
     return (
         <View style={styles.viewImage}>
-            {size(imageSelected) < 4 && (
+            {size(imagesSelected) < 4 && (
                 <Icon 
                     type='material-community'
                     name='camera'
@@ -250,7 +277,7 @@ function UploadImage(props){
                 />
             )}
             {
-                imageSelected.map((imageRestaurant, i) => (
+                imagesSelected.map((imageRestaurant, i) => (
                     <Avatar 
                         key={i} 
                         style={styles.miniatureStyle}
