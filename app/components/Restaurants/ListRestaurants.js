@@ -4,7 +4,7 @@ import { Image } from 'react-native-elements';
 import { size } from 'lodash';
 
 export default function ListRestaurants(props) {
-    const { restaurants } = props;
+    const { restaurants, handleLoadMore, isLoading } = props;
     
     return (
         <View>
@@ -13,6 +13,9 @@ export default function ListRestaurants(props) {
                     data={restaurants}
                     renderItem={(restaurant) => <Restaurant restaurant={restaurant}/>}
                     // keyExtractor={(item, index).index.toString()}
+                    onEndReachedThreshold={0.5}
+                    onEndReached={handleLoadMore}
+                    ListFooterComponent={<FooterList isLoading={isLoading} />}
                 />
             ) : (
                 <View style={styles.loaderRestaurants}>
@@ -55,6 +58,25 @@ function Restaurant(props) {
     )
 }
 
+function FooterList(props){
+    const { isLoading } = props;
+
+    if(isLoading) {
+        return (
+            <View style={styles.loaderRestaurants}>
+                <ActivityIndicator size="large" />
+            </View>
+        )
+    }
+    else {
+        return (
+            <View style={styles.notFountRestaurant}>
+                <Text>No quedan restaurantes por cargar</Text>
+            </View>
+        )
+    }
+}
+
 const styles = StyleSheet.create({
     loaderRestaurants: {
         marginTop: 10,
@@ -83,5 +105,10 @@ const styles = StyleSheet.create({
         padding: 2,
         color: "grey",
         width: 300
+    },
+    notFountRestaurant: {
+        marginTop: 10,
+        marginBottom: 20,
+        alignItems: "center"
     }
 })
