@@ -5,6 +5,7 @@ import { firebaseApp } from "../../utils/firebase";
 import * as firebase from 'firebase';
 // import firebase from 'firebase/app';
 import "firebase/firestore";
+import ListRestaurants from "../../components/Restaurants/ListRestaurants";
 
 const db = firebase.firestore(firebaseApp);
 
@@ -15,7 +16,7 @@ export default function Restaurants(props){
     const [restaurants, setRestaurants] = useState([]);
     const [totalRestaurants, setTotalRestaurants] = useState(0);
     const [startRestaurants, setStartRestaurants] = useState(null);
-    const limitRestaurant = 7;
+    const limitRestaurant = 10;
 
 
     console.log(restaurants);
@@ -55,7 +56,9 @@ export default function Restaurants(props){
 
     return (
         <View style={styles.viewBody}>
-            <Text>xRestaurantsx...</Text>
+            <ListRestaurants 
+                restaurants={restaurants}
+            />
 
             {user && (
                 <Icon
