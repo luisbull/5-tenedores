@@ -27,13 +27,8 @@ export default function AddRestaurantForm (props){
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [locationRestaurant, setLocationRestaurant] = useState(null);
 
-    // console.log(imagesSelected);
 
     const addRestaurant = () => {
-        // console.log(`Restaurant name: ${restaurantName}`);
-        // console.log(`Restaurant address: ${restaurantAddress}`);
-        // console.log(`Restaurant description: ${restaurantDescription}`);
-        // console.log(locationRestaurant);
         if (!restaurantName || !restaurantAddress || !restaurantDescription){
             toastRef.current.show("Todos los campos son obligatorios");
         }
@@ -181,7 +176,6 @@ function Map(props){
       (async() => {
           const resultPermissions = await Location.requestForegroundPermissionsAsync();
           const resultPermissionsLocation = resultPermissions.status;
-          console.log(resultPermissionsLocation);
           if (resultPermissionsLocation !== "granted"){
               toastRef.current.show("Tienes que aceptar los permisos de localizacion para crear un restaurante", 3000);
           }

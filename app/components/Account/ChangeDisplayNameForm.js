@@ -32,7 +32,6 @@ export default function ChangeDisplayNameForm(props) {
                     setLoading(false);
                     setReloadUserInfo(true);
                     setShowModal(false);
-                    console.log("OK");
                 })
                 .catch(() => {
                     sentError("Error al actualizar el nombre");
