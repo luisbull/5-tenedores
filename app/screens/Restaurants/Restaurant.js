@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Dimensions } from 'react-native';
-import { Rating } from 'react-native-elements';
+import { Rating, ListItem, Icon } from 'react-native-elements';
 import Loading from '../../components/Loading';
 import Carousel from '../../components/Carousel';
 import Map from '../../components/Map';
+import ListReviews from '../../components/Restaurants/ListReviews';
 
 import { firebaseApp } from '../../utils/firebase';
 import firebase from 'firebase/app';
@@ -48,10 +49,15 @@ export default function Restaurant(props) {
         rating={rating}
       />
       <RestaurantInfo 
-          location={restaurant.location}
-          name={restaurant.name}
-          address={restaurant.address}
-        />
+        location={restaurant.location}
+        name={restaurant.name}
+        address={restaurant.address}
+      />
+      <ListReviews
+        navigation={navigation}
+        idRestaurant={restaurant.id}
+        setRating={setRating}
+      />
     </ScrollView>
   )
 }
@@ -77,12 +83,46 @@ function TitleRestaurant(props){
 function RestaurantInfo(props){
   const { location, name, address } = props;
 
+  const listInfo = [
+    {
+      text: address,
+      iconName: "map-marker",
+      iconType: "material-community",
+      action: null,
+      iconColorLeft: "#00a268",
+    },
+    {
+      text: "111-222-333",
+      iconName: "phone",
+      iconType: "material-community",
+      action: null,
+      iconColorLeft: "#00a268",
+    },
+    {
+      text: "tambor@gmail.com",
+      iconName: "at",
+      iconType: "material-community",
+      action: null,
+      iconColorLeft: "#00a268",
+    },
+  ];
+
   return (
     <View style={styles.viewRestaurantInfo}>
       <Text style={styles.restaurantInfoTitle}>
         Informacion sobre el restaurante
       </Text>
       <Map location={location} name={name} height={100}/>
+      {
+        listInfo.map((item, i) => (
+        <ListItem key={i} style={styles.containerListItem} onPress={item.onPress}>
+            <Icon name={item.iconName} type={item.iconType} color={item.iconColorLeft} />
+            <ListItem.Content>
+            <ListItem.Title>{item.text}</ListItem.Title>
+            </ListItem.Content>
+        </ListItem>
+        ))
+      }
     </View>
   );
 }
@@ -115,5 +155,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10
+  },
+  containerListItem: {
+    borderBottomColor: "#d8d8d8",
+    borderBottomWidth: 1
   }
 })
