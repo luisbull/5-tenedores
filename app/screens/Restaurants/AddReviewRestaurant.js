@@ -2,6 +2,13 @@ import React, { useEffect, useState, useRef } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { AirbnbRating, Button, Input } from 'react-native-elements';
 import Toast from 'react-native-easy-toast';
+import Loading from '../../components/Loading';
+
+import { firebaseApp } from '../../utils/firebase';
+import firebase from 'firebase/app';
+import "firebase/firestore";
+
+const db = firebase.firestore(firebaseApp);
 
 export default function AddReviewRestaurant(props) {
 
@@ -24,7 +31,27 @@ export default function AddReviewRestaurant(props) {
             toastRef.current.show("El comentario es obligatorio");
         }
         else {
-            console.log("OK");
+            setIsLoading(true);
+            const user = firebase.auth().currentUser;
+            const payload = {
+                idUser: user.uid,
+                avatarUser: user.photoURL,
+                idRestaurant: idRestaurant,
+                title: title,
+                review: review,
+                rating: rating,
+                createAt: new Date(),
+            }
+
+            db.collection("reviews")
+                .add(payload)
+                .then(() => {
+                    setIsLoading(false)
+                })
+                .catch(() => {
+                    toastRef.current.show("Error al enviar review");
+                    setIsLoading(false);
+                })
         }
     }
 
@@ -62,6 +89,10 @@ export default function AddReviewRestaurant(props) {
                 ref={toastRef}
                 position="center"
                 opacity={0.9}
+            />
+            <Loading
+                isVisible={isLoading}
+                text="Enviando comentario"
             />
         </View>
   )
