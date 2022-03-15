@@ -24,9 +24,10 @@ export default function ListReviews(props) {
                     titleStyle={styles.btnTitleAddReview}
                     icon={{
                         type: "material-community",
-                        // name: "square-edit-outline",
+                        name: "square-edit-outline",
                         color: "#00a680"
                     }}
+                    onPress={() => navigation.navigate("add-review-restaurant", { idRestaurant: idRestaurant } )}
                 />
             ) : (
                 <View>
