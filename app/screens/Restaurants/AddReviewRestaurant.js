@@ -46,13 +46,32 @@ export default function AddReviewRestaurant(props) {
             db.collection("reviews")
                 .add(payload)
                 .then(() => {
-                    setIsLoading(false)
+                    updateReview()
                 })
                 .catch(() => {
                     toastRef.current.show("Error al enviar review");
                     setIsLoading(false);
                 })
         }
+    }
+
+    const updateReview = () => {
+        const restaurantRef = db.collection("restaurants").doc(idRestaurant);
+        restaurantRef.get().then((response) => {
+            const restaurantData = response.data();
+            const ratingTotal = restaurantData.ratingTotal + rating;
+            const quantityVoting = restaurantData.quantityVoting + 1;
+            const ratingResult = ratingTotal / quantityVoting;
+
+            restaurantRef.update({
+                rating: ratingResult,
+                ratingTotal,
+                quantityVoting
+            }).then(() => {
+                setIsLoading(false);
+                navigation.goBack();
+            })
+        })
     }
 
     return (
