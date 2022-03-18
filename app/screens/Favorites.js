@@ -2,6 +2,8 @@ import React, { useState, useRef, useCallback } from "react";
 import { StyleSheet, View, Text, FlatList, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
 import { Image, Icon, Button } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
+import { size } from 'lodash';
+import Loading from "../components/Loading";
 
 import { firebaseApp } from "../utils/firebase";
 import firebase from "firebase";
@@ -55,9 +57,25 @@ export default function Favorites(){
         return Promise.all(arrayRestaurants);
     }
 
+    if(!restaurants){
+        return <Loading isVisible={true} text="Cargando restaurantes" />
+    }
+    else if (size(restaurants) === 0 ) {
+        return <NotFoundRestaurants />
+    }
+
     return (
         <View>
-            <Text>xFavoritesx...</Text>
+            <Text>Favorites...</Text>
+        </View>
+    )
+}
+
+function NotFoundRestaurants() {
+    return (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Icon  type="material-community" name="alert-outline" size={50} />
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>No tienes restaurantes en tu lista</Text>
         </View>
     )
 }
