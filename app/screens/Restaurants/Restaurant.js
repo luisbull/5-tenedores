@@ -45,6 +45,21 @@ export default function Restaurant(props) {
     },[])
   );
 
+  useEffect(() => {
+    if(userLogged && restaurant){
+      db.collection("favorites")
+        .where("idRestaurant", "==", restaurant.id)
+        .where("idUser", "==", firebase.auth().currentUser.uid)
+        .get()
+        .then((response) => {
+          if(response.docs.length === 1){
+            setIsFavorite(true)
+          }
+        })
+    }
+  }, [userLogged, restaurant])
+  
+
   const addFavorite = () => {
     if(!userLogged){
       toastRef.current.show("Para usar el sistema de favoritos tienes que estar logeado")
@@ -67,7 +82,25 @@ export default function Restaurant(props) {
   }
 
   const removeFavorite = () => {
-    console.log("Eliminar de favoritos");
+    db.collection("favorites")
+      .where("idRestaurant", "==", restaurant.id)
+      .where("idUser", "==", firebase.auth().currentUser.uid)
+      .get()
+      .then((response) => {
+        response.forEach((doc) => {
+          const idFavorite = doc.id;
+          db.collection("favorites")
+            .doc(idFavorite)
+            .delete()
+            .then(() => {
+              setIsFavorite(false);
+              toastRef.current.show("Restaurante eliminado de favoritos")
+            })
+            .catch(() => {
+              toastRef.current.show("Error al eliminar restaurante de favoritos")
+            })
+        })
+      })
   }
 
   if(!restaurant ) return <Loading isVisible={true} text="Cargando..." />;
