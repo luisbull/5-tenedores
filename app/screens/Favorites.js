@@ -11,9 +11,12 @@ import 'firebase/firestore';
 
 const db = firebase.firestore(firebaseApp);
 
-export default function Favorites(){
+export default function Favorites(props){
 
-    const [restaurants, setRestaurants] = useState(null);
+    const { navigation } = props;
+
+    // const [restaurants, setRestaurants] = useState(null);
+    const [restaurants, setRestaurants] = useState([]);
     const [userLogged, setUserLogged] = useState(false);
 
     console.log(restaurants);
@@ -57,10 +60,11 @@ export default function Favorites(){
         return Promise.all(arrayRestaurants);
     }
 
-    if(!restaurants){
-        return <Loading isVisible={true} text="Cargando restaurantes" />
+    if(!userLogged){
+        return <UserNotLogged navigation={navigation}/>
     }
-    else if (size(restaurants) === 0 ) {
+
+    if (size(restaurants) === 0 ) {
         return <NotFoundRestaurants />
     }
 
@@ -76,6 +80,25 @@ function NotFoundRestaurants() {
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
             <Icon  type="material-community" name="alert-outline" size={50} />
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>No tienes restaurantes en tu lista</Text>
+        </View>
+    )
+}
+
+function UserNotLogged(props) {
+    const { navigation  } = props;
+
+    return (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center"}} >
+            <Icon type="material-community" name="alert-outline" size={50}/>
+            <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>
+                Necesitas estar logueado para ver esta seccion
+            </Text>
+            <Button 
+                title="Ir a login"
+                containerStyle={{ marginTop: 20, width: "80%" }}
+                buttonStyle={{ backgroundColor: "#00a680"}}
+                onPress={() => navigation.navigate("login" )}
+            />
         </View>
     )
 }

@@ -14,7 +14,11 @@ export default function LoginForm(props) {
     const [formData, setFormData] = useState(defaultFormValue());
     const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
-
+    
+    const onChange = (e, type) => {
+        setFormData({ ...formData, [type]: e.nativeEvent.text});
+    }
+    
     const onSubmit = () => {
 
         if (isEmpty(formData.email) || isEmpty(formData.password)){
@@ -39,9 +43,6 @@ export default function LoginForm(props) {
         }
     }
 
-    const onChange = (e, type) => {
-        setFormData({ ...formData, [type]: e.nativeEvent.text});
-    }
 
     return (
         <View style={styles.formContainer}>
