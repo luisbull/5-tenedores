@@ -21,7 +21,6 @@ export default function Favorites(props){
     const [reloadData, setReloadData] = useState(false);
     const toastRef = useRef();
 
-    console.log(restaurants);
 
     firebase.auth().onAuthStateChanged((user) => {
         user ? setUserLogged(true) : setUserLogged(false);
