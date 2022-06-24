@@ -58,33 +58,45 @@ function NoFoundRestaurants() {
 function Restaurant(props){
     const { restaurant, navigation} = props;
     const { id, name, images } = restaurant.item;
+    // console.log(images);
     console.log(images);
 
     return (
-        // <ListItem
-        //     title={name}
-        //     leftAvatar={{
-        //         source: images[0] ? { uri: images[0] } : require("../../assets/img/no-image.png")
-        //     }}
-        //     rightIcon={<Icon type="material-community" name="chevron-right" />}
-        //     onPress={() => navigation.navigate("restaurants")}
+        <ListItem
+            title={name}
+            leftAvatar={{
+                source: images[0] ? { uri: images[0] } : require("../../assets/img/no-image.png")
+            }}
+            rightIcon={<Icon type="material-community" name="chevron-right" />}
+            onPress={() => navigation.navigate("restaurants", { screen: "restaurant", params:{ id }, })}
 
-        // />
-        <ListItem style={styles.menuItems} onPress={() => navigation.navigate("restaurant", {id, name})} 
-                leftAvatar={{
-                     source: images[0] ? { uri: images[0] } : require("../../assets/img/no-image.png")
-                }} >
-            <Avatar 
+        >
+            <ListItem.Title>{name}</ListItem.Title>
+            <ListItem.Chevron color="#ccc"/>
+            {/* <Avatar 
                 style={styles.image}
                 size={40}
                 // PlaceholderContent={<ActivityIndicator color="#fff" />}
                 source={ images[0] ? { uri: images[0] } : require("../../assets/img/no-image.png")}
-            />
-        <ListItem.Content>
-            <ListItem.Title>{name}</ListItem.Title>
-        </ListItem.Content>
-        <ListItem.Chevron color="#ccc"/>
-    </ListItem>
+            /> */}
+            <Avatar source={images[0]}/>
+        </ListItem>
+        
+        // <ListItem style={styles.menuItems} onPress={() => navigation.navigate("restaurant", {id, name})} 
+        //         leftAvatar={{
+        //              source: images[0] ? { uri: images[0] } : require("../../assets/img/no-image.png")
+        //         }} >
+        //     <Avatar 
+        //         style={styles.image}
+        //         size={40}
+        //         // PlaceholderContent={<ActivityIndicator color="#fff" />}
+        //         source={ images[0] ? { uri: images[0] } : require("../../assets/img/no-image.png")}
+        //     />
+        // <ListItem.Content>
+        //     <ListItem.Title>{name}</ListItem.Title>
+        // </ListItem.Content>
+        // <ListItem.Chevron color="#ccc"/>
+    // </ListItem>
     )
 }
 
