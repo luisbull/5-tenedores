@@ -2,6 +2,7 @@
   "expo": {
     "name": "5-tenedores",
     "slug": "5-tenedores",
+    "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -35,6 +36,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "Restaurants list app"
   }
 }
